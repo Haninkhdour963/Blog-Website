@@ -1,0 +1,55 @@
+﻿@page "/fetch-articles"
+@inject BlogService BlogService
+
+<h3>Latest Articles</h3>
+@* <main class="container">
+    <div class="content">
+        <article>
+            <img src="../wwwroot/imgs/blog-item-01.png" alt="Article 1 Image">
+            <input type="datetime" name="myDatetime" id="myDatetime">
+            <h2>Article Title 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet.</p>
+            <a href="../Semantic Elements/Pages/SingleArticle.html">read More</a>
+        </article>
+
+    </div>
+
+</main> *@
+<button onclick="FetchMyArticles">Fetch Articles</button>
+
+@if (articles == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var article in articles)
+        {
+            <li>
+                <h4>@article.Title</h4>
+                <p>@article.Content</p>
+                <img src="@article.ImageUrl" alt="@article.Title" />
+                <small> @article.PublishedAt.ToString("g")</small>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Article> articles;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        articles = await BlogService.GetArticlesAsync();
+    }
+
+    
+   private async Task FetchMyArticles()
+    {
+        await BlogService.FetchAndSaveArticlesAsync();
+        articles = await BlogService.GetArticlesAsync();
+    }
+}
